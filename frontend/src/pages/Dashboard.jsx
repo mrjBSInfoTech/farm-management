@@ -8,6 +8,10 @@ import {
   CardContent,
   Chip,
   Divider,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
   FormControl,
   InputLabel,
   InputAdornment,
@@ -32,9 +36,11 @@ import dayjs from "dayjs";
 import { getIotData } from "../api/iotAPI";
 import { saveHistory } from "../api/historyAPI";
 import { getHistory } from "../api/historyAPI";
+import { styled } from "@mui/material/styles";  
 import Export from "../components/Dashboard/Export.jsx";
 
 // Icons
+import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
 import OpacityIcon from "@mui/icons-material/Opacity";
@@ -46,7 +52,51 @@ function SlideTransition(props) {
   return <Slide {...props} direction="up" />;
 }
 
+// Styled component for the drop zone
+const DropZone = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "isDragActive" && prop !== "hasError",
+})(({ theme, isDragActive, hasError }) => ({
+  width: "100%",
+  minHeight: 200,
+  border: `2px dashed ${
+    hasError
+      ? theme.palette.error.main
+      : isDragActive
+        ? theme.palette.primary.main
+        : theme.palette.grey[400]
+  }`,
+  borderRadius: theme.shape.borderRadius,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: theme.spacing(3),
+  cursor: "pointer",
+  transition: "all 0.3s ease-in-out",
+  backgroundColor: isDragActive ? theme.palette.action.hover : "transparent",
+  "&:hover": {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+// Animation transition
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return (
+    <Slide
+      direction="up"
+      ref={ref}
+      {...props}
+      timeout={500}
+      easing={{
+        enter: "cubic-bezier(0.4, 0, 0.2, 1)",
+        exit: "ease-out",
+      }}
+    />
+  );
+});
+
 export default function Dashboard() {
+  const [openDialog, setOpenDialog] = useState(false);
   const [openExport, setOpenExport] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -72,10 +122,21 @@ export default function Dashboard() {
   const handleOpenExport = () => {
     setOpenExport(true);
   };
+
+  // 📁 Open Alert Dialog
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const closeDialog = () => {
+    setOpenDialog(false);
+  };
+
   const [iotData, setIotData] = useState({
     ph: 0,
     temperature: 0,
     turbidity: 0,
+    oxygen: 0,
   });
   const [waterUsage, setWaterUsage] = useState("");
 
@@ -131,6 +192,9 @@ export default function Dashboard() {
   const TEMP_GOOD_MIN = 20; // °C
   const TEMP_GOOD_MAX = 30;
 
+  const OXYGEN_GOOD_MIN = 5; // mg/L
+  const OXYGEN_GOOD_MAX = 14; // mg/L
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "Great":
@@ -159,6 +223,12 @@ export default function Dashboard() {
   // Temperature status
   const tempStatus =
     iotData.temperature >= TEMP_GOOD_MIN && iotData.temperature <= TEMP_GOOD_MAX
+      ? "Great"
+      : "Bad";
+
+  // Oxygen status
+  const oxygenStatus =
+    iotData.oxygen >= OXYGEN_GOOD_MIN && iotData.oxygen <= OXYGEN_GOOD_MAX
       ? "Great"
       : "Bad";
 
@@ -193,6 +263,17 @@ export default function Dashboard() {
         />
       ),
     },
+    {
+      title: "OXYGEN",
+      value: iotData.oxygen,
+      unit: "mg/L",
+      ...getStatusStyle(oxygenStatus),
+      icon: (
+        <BubbleChartIcon
+          sx={{ color: getStatusStyle(oxygenStatus).iconColor }}
+        />
+      ),
+    },
   ];
 
   // Update water usage whenever statuses change
@@ -200,13 +281,16 @@ export default function Dashboard() {
     if (
       phStatus === "Bad" ||
       turbidityStatus === "Bad" ||
-      tempStatus === "Bad"
+      tempStatus === "Bad" ||
+      oxygenStatus === "Bad"
     ) {
-      setWaterUsage("Water is safe for external use.");
+      setWaterUsage("Water is not safe for farming.");
+      handleOpenDialog();
     } else {
-      setWaterUsage("Water is safe for drinking.");
+      setWaterUsage("Water is safe for farming.");
+      closeDialog();
     }
-  }, [phStatus, turbidityStatus, tempStatus]);
+  }, [phStatus, turbidityStatus, tempStatus, oxygenStatus]);
 
   const handleSaveData = async () => {
     const now = Date.now();
@@ -214,11 +298,9 @@ export default function Dashboard() {
     // Check if cooldown is active
     if (now - lastSaveTime < SAVE_COOLDOWN) {
       const remainingTime = Math.ceil(
-        (SAVE_COOLDOWN - (now - lastSaveTime)) / 1000
+        (SAVE_COOLDOWN - (now - lastSaveTime)) / 1000,
       );
-      setSnackbarMessage(
-        `⏳ Please wait ${remainingTime}s before saving again`
-      );
+      setSnackbarMessage(`Please wait ${remainingTime}s before saving again`);
       setSnackbarOpen(true);
       return;
     }
@@ -236,6 +318,7 @@ export default function Dashboard() {
         ph_level: iotData.ph,
         turbidity: iotData.turbidity,
         temperature: iotData.temperature,
+        dissolved_oxygen: iotData.oxygen,
         water_status: waterUsage,
       });
 
@@ -269,6 +352,7 @@ export default function Dashboard() {
       row.ph_level,
       row.turbidity,
       row.temperature,
+      row.oxygen,
       getStatusLabel(row.water_status),
     ]);
 
@@ -293,6 +377,7 @@ export default function Dashboard() {
       "pH Level": row.ph_level,
       Turbidity: row.turbidity,
       Temperature: row.temperature,
+      Oxygen: row.oxygen,
       Status: getStatusLabel(row.water_status),
     }));
 
@@ -324,7 +409,7 @@ export default function Dashboard() {
         </Box>
         <Button
           variant="outlined"
-          sx={{ 
+          sx={{
             borderRadius: 2,
             height: { xs: 40, sm: 40 },
             width: { xs: 170, sm: 150 },
@@ -338,10 +423,13 @@ export default function Dashboard() {
       </Box>
       <Box
         sx={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(4, 1fr)",
+          },
           gap: 3,
-          flexWrap: "wrap",
-          justifyContent: "center",
           mt: 3,
         }}
       >
@@ -349,10 +437,7 @@ export default function Dashboard() {
           <Card
             key={index}
             sx={{
-              flex: "1 1 calc(33.333% - 24px)",
-            minWidth: 280,
-            maxWidth: { xs: 350, md: "none" }, // Responsive maxWidth
-            width: "100%", 
+              minWidth: 0,
               borderRadius: 3,
               backgroundColor: card.color,
               boxShadow: "0px 4px 10px rgba(0,0,0,0.08)",
@@ -490,11 +575,11 @@ export default function Dashboard() {
               variant="contained"
               onClick={handleSaveData}
               disabled={isSaving}
-              sx={{ 
+              sx={{
                 borderRadius: 1,
                 height: { xs: 35, sm: 40 },
-                width: { xs: '100%', sm: 150 },
-                fontSize: { xs: 12, sm: 16 }, 
+                width: { xs: "100%", sm: 150 },
+                fontSize: { xs: 12, sm: 16 },
               }}
             >
               {isSaving ? "Saving..." : "Save Data"}
@@ -508,22 +593,22 @@ export default function Dashboard() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              bgcolor: waterUsage.includes("drinking") ? "#E8F5E9" : "#FFF3E0",
+              bgcolor: waterUsage.includes("not safe") ? "#FFF3E0" : "#E8F5E9",
               borderRadius: 3,
               p: { xs: 1.5, sm: 3 },
               width: "100%",
               overflow: "auto",
               boxSizing: "border-box",
-              border: `2px solid ${waterUsage.includes("drinking") ? "#4CAF50" : "#FF9800"}`,
+              border: `2px solid ${waterUsage.includes("not safe") ? "#FF9800" : "#4CAF50"}`,
               position: "relative",
             }}
           >
             <Box sx={{ textAlign: "center" }}>
-              {waterUsage.includes("drinking") ? (
+              {waterUsage.includes("not safe") ? (
                 <CheckCircleIcon
                   sx={{
                     fontSize: 60,
-                    color: "#4CAF50",
+                    color: "#FF9800",
                     mb: 2,
                   }}
                 />
@@ -531,7 +616,7 @@ export default function Dashboard() {
                 <WarningIcon
                   sx={{
                     fontSize: 60,
-                    color: "#FF9800",
+                    color: "#4CAF50",
                     mb: 2,
                   }}
                 />
@@ -540,15 +625,15 @@ export default function Dashboard() {
                 variant="h5"
                 sx={{
                   fontWeight: "bold",
-                  color: waterUsage.includes("drinking")
-                    ? "#2E7D32"
-                    : "#E65100",
+                  color: waterUsage.includes("not safe")
+                    ? "#E65100"
+                    : "#2E7D32",
                   mb: 1,
                 }}
               >
-                {waterUsage.includes("drinking")
-                  ? "Safe for Drinking"
-                  : "Safe for External Use"}
+                {waterUsage.includes("not safe")
+                  ? "Not Safe for Farming"
+                  : "Safe for Farming"}
               </Typography>
               <Typography
                 color="text.secondary"
@@ -620,9 +705,51 @@ export default function Dashboard() {
                     {iotData.temperature}°C
                   </Typography>
                 </Box>
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "text.secondary", mb: 0.5 }}
+                  >
+                    Oxygen
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: "1.25rem",
+                      fontWeight: "bold",
+                      color: tempStatus === "Great" ? "#22C55E" : "#EF4444",
+                    }}
+                  >
+                    {iotData.oxygen} mg/L
+                  </Typography>
+                </Box>
               </Box>
             </Box>
           </Box>
+          {waterUsage.includes("not safe") && (
+            <Dialog
+              open={openDialog}
+              onClose={closeDialog}
+              TransitionComponent={Transition}
+              keepMounted
+              PaperProps={{
+                sx: { minWidth: "300px" },
+              }}
+            >
+              <DialogTitle sx={{fontWeight: "bold"}}>
+                Water Condition Alert
+              </DialogTitle>
+              <DialogContent>
+                <Typography>
+                  The water condition is not safe for farming.
+                </Typography>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={closeDialog} color="secondary" >
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
+          )}
         </Paper>
       </Box>
       <Snackbar

@@ -25,20 +25,20 @@ const verifyToken = (req, res, next) => {
 
 // Save water quality history
 router.post("/save", verifyToken, (req, res) => {
-  const { ph_level, turbidity, temperature, water_status } = req.body;
+  const { ph_level, turbidity, temperature, dissolved_oxygen, water_status } = req.body;
 
-  if (ph_level == null || turbidity == null || temperature == null || water_status == null) {
+  if (ph_level == null || turbidity == null || temperature == null || dissolved_oxygen == null || water_status == null) {
     return res.status(400).json({ message: "Missing required data" });
   }
 
   const userId = req.user.id;
 
   const sql = `
-    INSERT INTO history (user_id, ph_level, turbidity, temperature, water_status, recorded_at)
-    VALUES (?, ?, ?, ?, ?, NOW())
+    INSERT INTO history (user_id, ph_level, turbidity, temperature, dissolved_oxygen, water_status, recorded_at)
+    VALUES (?, ?, ?, ?, ?, ?, NOW())
   `;
 
-  db.query(sql, [userId, ph_level, turbidity, temperature, water_status], (err, result) => {
+  db.query(sql, [userId, ph_level, turbidity, temperature, dissolved_oxygen, water_status], (err, result) => {
     if (err) {
       console.error("Save history error:", err);
       return res.status(500).json({ message: "Database error", error: err.message });
@@ -65,7 +65,7 @@ router.get("/", verifyToken, (req, res) => {
   if (isAdmin) {
     // Admins see all history with usernames
     sql = `
-      SELECT h.id, h.user_id, h.ph_level, h.turbidity, h.temperature, h.water_status, h.recorded_at, u.username 
+      SELECT h.id, h.user_id, h.ph_level, h.turbidity, h.temperature, h.dissolved_oxygen, h.water_status, h.recorded_at, u.username 
       FROM history h 
       LEFT JOIN users u ON h.user_id = u.id 
       ORDER BY h.recorded_at DESC

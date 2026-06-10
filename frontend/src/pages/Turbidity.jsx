@@ -24,11 +24,13 @@ export default function Turbidity() {
           variant="body1"
           sx={{ lineHeight: 1.8, color: "text.secondary" }}
         >
-          Turbidity refers to how clear or cloudy water is due to suspended
-          particles like dirt, algae, bacteria, or waste. High turbidity makes
-          water look murky and can be a sign of pollution. These particles can
-          carry harmful microorganisms, chemicals, and pathogens that cause
-          disease, making the water unsafe to drink or use.
+          For aquaculture and aquatic farming, high turbidity directly impacts
+          crop and livestock performance. Suspended particles reduce light
+          penetration into the water, limiting photosynthesis for aquatic plants
+          and algae that produce oxygen. This reduces oxygen levels in the
+          water, stressing fish and other aquatic organisms. High turbidity can
+          also indicate algae blooms or contamination that poses health risks to
+          farmed species, reducing yields and profitability.
         </Typography>
         <br />
         <Typography
@@ -64,11 +66,15 @@ export default function Turbidity() {
           variant="body1"
           sx={{ lineHeight: 1.8, color: "text.secondary" }}
         >
-          High turbidity increases the risk of waterborne diseases such as
-          diarrhea, cholera, and other infections. Cloudy water is unsafe for
-          drinking, bathing, and recreational activities. Clear water improves
-          public health, supports safe water treatment, and reduces exposure to
-          harmful pathogens, helping communities maintain better overall health.
+          For aquatic farmers, high turbidity directly impacts crop and
+          livestock performance. Excessive suspended particles block sunlight
+          needed for aquatic plant photosynthesis, reducing oxygen production
+          and crop growth. Turbidity also indicates potential contamination or
+          algae blooms that can harm fish health and survival. Farmers
+          monitoring turbidity can detect water quality problems early, clean
+          filtration systems, and adjust management practices to maintain
+          optimal growing conditions, protect their aquaculture investments, and
+          ensure sustainable yields.
         </Typography>
       </Box>
     </Box>

@@ -30,8 +30,8 @@ export default function History() {
   const [selectedDate, setSelectedDate] = useState(isAdmin ? null : dayjs());
 
   const getStatusColor = (status) => {
-    if (status && status.includes("drinking")) return "#4CAF50";
-    if (status && status.includes("external")) return "#FF9800";
+    if (status && status.includes("not safe")) return "#FF9800";
+    if (status && status.includes("not safe")) return "#4CAF50";
     return "#F44336";
   };
 
@@ -156,6 +156,9 @@ export default function History() {
                     Temperature (°C)
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold", minWidth: 130 }} align="center">
+                    Dissolved Oxygen (mg/L)
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 130 }} align="center">
                     Status
                   </TableCell>
                 </TableRow>
@@ -187,6 +190,9 @@ export default function History() {
                     </TableCell>
                     <TableCell align="center" sx={{ fontWeight: 600 }}>
                       {row.temperature}
+                    </TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 600 }}>
+                      {row.dissolved_oxygen}
                     </TableCell>
                     <TableCell align="center">
                       <Chip

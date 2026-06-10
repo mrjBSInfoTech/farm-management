@@ -66,11 +66,11 @@ export default function Guide() {
         >
           <WaterDropIcon sx={{ fontSize: 80, mb: 3, opacity: 0.9 }} />
           <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            Welcome to HydroSmart
+            Welcome to AquaWatch
           </Typography>
           <Typography variant="body1" sx={{ mb: 4, opacity: 0.95 }}>
             Learn how to use the water monitoring system to track water quality
-            and keep your system running smoothly.
+            and ensure optimal conditions for your farming operations.
           </Typography>
           <Button
             variant="contained"

@@ -11,56 +11,28 @@ import { modalStyles } from "../theme/modalTheme";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Stack, Avatar, Typography, IconButton } from "@mui/material";
 import { ThemeProvider, CssBaseline, useMediaQuery } from "@mui/material";
+import { lightTheme, darkTheme } from "../theme/customTheme";
 import { createTheme } from "@mui/material/styles";
 
 //Icons
+import AirIcon from "@mui/icons-material/Air";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import DescriptionIcon from "@mui/icons-material/Description";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import HistoryIcon from "@mui/icons-material/History";
-import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import FolderIcon from "@mui/icons-material/Folder";
-import PersonIcon from '@mui/icons-material/Person';
+import OpacityIcon from "@mui/icons-material/Opacity";
+import PersonIcon from "@mui/icons-material/Person";
 import PlayLessonIcon from "@mui/icons-material/PlayLesson";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import WaterIcon from '@mui/icons-material/Water';
+import WaterIcon from "@mui/icons-material/Water";
 
-export const lightTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#5E60CE",
-    },
-    background: {
-      default: "#f8f9fa", // Light gray background for light mode
-      paper: "#FFFFFF",
-      sidebar: "#5E60CE",
-    },
-    text: {
-      primary: "#FFFFFF",
-    },
-  },
-});
-
-export const darkTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#7C7FED",
-    },
-    background: {
-      default: "#0F172A", // Dark background for dark mode
-      paper: "#1e293b", // Slightly lighter than default for paper
-      sidebar: "#4C1D95",
-    },
-    text: {
-      primary: "#FFFFFF",
-    },
-  },
-});
 
 export default function DashboardLayout({ children }) {
   const navigate = useNavigate();
@@ -96,7 +68,7 @@ export default function DashboardLayout({ children }) {
     const names = name.split(" ");
     const initials = names.map((n) => n.charAt(0).toUpperCase()).join("");
     return initials;
-  }
+  };
 
   const handleLogout = () => {
     // Clear all stored data
@@ -114,7 +86,7 @@ export default function DashboardLayout({ children }) {
   };
 
   // Check if current user is admin
-  const isAdmin = role === 'Administrator';
+  const isAdmin = role === "Administrator";
 
   // Sidebar menu items
   const navigation = [
@@ -138,7 +110,7 @@ export default function DashboardLayout({ children }) {
         {
           segment: "turbidity",
           title: "Turbidity",
-          icon: <BubbleChartIcon />,
+          icon: <OpacityIcon />,
         },
         {
           segment: "temperature",
@@ -146,9 +118,9 @@ export default function DashboardLayout({ children }) {
           icon: <ThermostatIcon />,
         },
         {
-          segment: "healthInfo",
-          title: "Health Info",
-          icon: <FavoriteIcon />,
+          segment: "oxygen",
+          title: "Oxygen",
+          icon: <BubbleChartIcon />,
         },
         {
           segment: "waterInfo",
@@ -164,15 +136,17 @@ export default function DashboardLayout({ children }) {
       icon: <DashboardIcon />,
       pattern: "/dashboard",
     },
-    ...(isAdmin ? [
-      { kind: "divider" },
-      {   
-        segment: "account",
-        title: "Account",
-        icon: <PersonIcon />,
-        pattern: "/account",
-      },
-    ] : []),
+    ...(isAdmin
+      ? [
+          { kind: "divider" },
+          {
+            segment: "account",
+            title: "Account",
+            icon: <PersonIcon />,
+            pattern: "/account",
+          },
+        ]
+      : []),
     { kind: "divider" },
     {
       segment: "history",
@@ -189,12 +163,21 @@ export default function DashboardLayout({ children }) {
   ];
 
   const branding = {
-    logo: <WaterDropIcon sx={{ fontSize: 30 }} color="primary" />,
-    title: "HydroSmart",
+    logo: <WaterDropIcon sx={{ fontSize: 30, fontColor: "white" }} />,
+    title: (
+      <Typography
+        sx={{
+          color: "#ffffff",
+          fontWeight: "bold",
+          fontSize: 22,
+        }}
+      >
+        AquaWatch
+      </Typography>
+    ),
     homeUrl: "/guide",
   };
 
-  // ✅ Sidebar footer (Account section)
   // ✅ Sidebar footer (Account section)
   const SidebarFooter = ({ mini }) => (
     <Stack
@@ -206,11 +189,20 @@ export default function DashboardLayout({ children }) {
         p: 1.5,
         borderTop: "1px solid",
         borderColor: "divider",
-        backgroundColor: "background.paper",
+        backgroundColor: theme.palette.background.sidebar,
+        color: theme.palette.text.sidebar,
+        // Force it down if the parent allows flex growth
+        mt: "auto",
       }}
     >
       <Stack direction="row" spacing={1.5} alignItems="center">
-        <Avatar sx={{ width: 40, height: 40, background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`, }}>
+        <Avatar
+          sx={{
+            width: 40,
+            height: 40,
+            background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
+          }}
+        >
           {getInitials(user)}
         </Avatar>
         {!mini && (
@@ -238,11 +230,7 @@ export default function DashboardLayout({ children }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppProvider
-        navigation={navigation}
-        branding={branding}
-        router={router}
-      >
+      <AppProvider navigation={navigation} branding={branding} router={router}>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -300,10 +288,71 @@ export default function DashboardLayout({ children }) {
             sidebarFooter: SidebarFooter,
           }}
           sx={{
+            "& .MuiDrawer-paper .MuiBox-root": {
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            },
+
             "& .MuiDrawer-paper": {
-              backgroundColor: "background.sidebar",
-              borderRight: "1px solid",
-              borderColor: "divider",
+              backgroundColor: theme.palette.background.sidebar,
+              color: theme.palette.text.sidebar,
+              borderRight: "none",
+            },
+
+            "& .MuiAppBar-root .MuiIconButton-root": {
+              color: "#ffffff",
+            },
+
+            "& .MuiAppBar-root .MuiSvgIcon-root": {
+              color: "#ffffff",
+            },
+
+            "& .MuiDrawer-paper .MuiPaper-root": {
+              backgroundColor: theme.palette.background.sidebar,
+            },
+            // Selected text
+            "& .MuiDrawer-paper .Mui-selected .MuiListItemText-primary": {
+              color: "#2563eb",
+            },
+
+            // Selected icon
+            "& .MuiDrawer-paper .Mui-selected .MuiSvgIcon-root": {
+              color: "#2563eb",
+            },
+
+            // Sidebar icons color
+            "& .MuiDrawer-paper .MuiSvgIcon-root": {
+              color: "#ffffff",
+            },
+
+            // Sidebar text
+            "& .MuiListItemButton-root": {
+              color: "#ffffff",
+              borderRadius: "8px",
+              margin: "4px 2px",
+            },
+
+            // Sidebar icons
+            "& .MuiListItemIcon-root": {
+              color: "#ffffff",
+              minWidth: 36,
+            },
+
+            // Hover effect
+            "& .MuiListItemButton-root:hover": {
+              backgroundColor: "rgba(255,255,255,0.15)",
+            },
+
+            // Active item
+            "& .Mui-selected": {
+              backgroundColor: "rgba(255,255,255,0.25) !important",
+            },
+
+            // Header
+            "& .MuiAppBar-root": {
+              backgroundColor: theme.palette.background.header,
+              boxShadow: "none",
             },
           }}
         >

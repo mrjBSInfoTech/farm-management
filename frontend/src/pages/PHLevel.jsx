@@ -25,13 +25,7 @@ export default function PHLevel() {
           variant="body1"
           sx={{ lineHeight: 1.8, color: "text.secondary" }}
         >
-          The pH level shows how acidic or basic water is on a scale from 0 to
-          14. Most natural and drinking water should have a pH close to neutral
-          (around 7). When water becomes too acidic or too alkaline, it can
-          cause serious problems. Acidic water can irritate the skin, eyes, and
-          stomach, especially when used for drinking or bathing. It can also
-          corrode plumbing systems, allowing toxic metals such as lead or copper
-          to dissolve into the water supply.
+          In aquaculture, pH level directly affects the health and survival of farmed aquatic organisms. Most fish and shrimp thrive in a pH range of 6.5-8.5. When pH becomes too acidic or too alkaline, it stresses aquatic life, inhibits nutrient absorption, and reduces growth rates. Abnormal pH also affects nutrient availability in the water—alkaline water can lock up essential minerals needed for plant and fish growth, while acidic water can make toxic metals more available.
         </Typography>
         <br />
         <Typography
@@ -67,12 +61,14 @@ export default function PHLevel() {
           variant="body1"
           sx={{ lineHeight: 1.8, color: "text.secondary" }}
         >
-          Water with unsafe pH levels can irritate the skin, eyes, and digestive
-          system when used for drinking, cooking, or bathing. Long-term exposure
-          to contaminated water may increase health risks, especially for
-          children and the elderly. Monitoring pH helps protect human health,
-          prevents infrastructure damage, and ensures that water is safe for
-          daily use.
+          For aquatic farmers, maintaining proper pH is critical for crop and
+          livestock productivity. Most aquatic plants and fish thrive in a pH
+          range of 6.5-8.5. Incorrect pH levels reduce nutrient uptake by crops,
+          weaken fish immunity, and promote algae blooms that can suffocate
+          fish. Farmers who monitor pH can optimize growth rates, reduce disease
+          outbreaks, and maximize yields. Stable pH also minimizes the need for
+          expensive chemical treatments and helps maintain a healthy aquatic
+          ecosystem for sustainable farming operations.
         </Typography>
       </Box>
     </Box>

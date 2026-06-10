@@ -5,6 +5,7 @@ let latestData = {
   ph: 0,
   temperature: 0,
   turbidity: 0,
+  oxygen: 0,
 };
 
 router.post("/data", (req, res) => {

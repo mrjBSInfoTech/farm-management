@@ -181,7 +181,7 @@ const Register = () => {
             fontSize: { xs: "1.8rem", sm: "2.2rem" }, // Smaller font
           }}
         >
-          HydroSmart
+          AquaWatch
         </Typography>
 
         {/* Subtitle */}
