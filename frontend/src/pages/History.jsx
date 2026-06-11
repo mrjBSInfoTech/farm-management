@@ -30,21 +30,25 @@ export default function History() {
   const [selectedDate, setSelectedDate] = useState(isAdmin ? null : dayjs());
 
   const getStatusColor = (status) => {
-    if (status && status.includes("not safe")) return "#FF9800";
-    if (status && status.includes("not safe")) return "#4CAF50";
-    return "#F44336";
+    if (status && status.includes("safe") && !status.includes("not")) return "#4CAF50"; // Green for safe
+    if (status && status.includes("not safe")) return "#FF9800"; // Orange for not safe
+    return "#F44336"; // Red as default
   };
 
   const getStatusLabel = (status) => {
-    if (status && status.includes("drinking")) return "Drinking Water";
-    if (status && status.includes("external")) return "External Use";
-    return "Not Safe";
+    if (status && status.includes("not safe")) return "Not Safe";
+    if (status && status.includes("safe")) return "Safe";
+    return "Unknown";
   };
 
   const formatTime = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }) + " " + date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",

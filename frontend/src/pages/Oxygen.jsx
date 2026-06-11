@@ -9,8 +9,7 @@ export default function Oxygen() {
           Dissolved Oxygen
         </Typography>
         <Typography variant="body1" sx={{ color: "text.secondary" }}>
-          Measures the amount of oxygen dissolved in water. Essential for
-          aquatic life and irrigation in aquatic agriculture.
+          The amount of oxygen gas dissolved in the water, which fish absorb through their gills. 
         </Typography>
       </Box>
 
@@ -55,6 +54,38 @@ export default function Oxygen() {
           oxygen levels throughout the day can stress plants and reduce crop
           yields. Proper aeration systems help maintain consistent oxygen levels
           for optimal growth in aquatic agriculture.
+        </Typography>
+      </Box>
+
+      {/* How it Affects Fish  */}
+      <Box sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+          How it affects fish: 
+        </Typography>
+        
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>1.) Below 3 mg/L</b> - severe stress, feeding stops, fish gather at water inlets or gasp at the surface.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>2.) Below 2 mg/L</b> - death within hours.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>3.) Chronic low DO (3-4 mg/L)</b> - poor growth, weakened immunity, higher disease rates.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>4.) Supersaturation (less than 110% saturation)</b> - gas bubble disease (rare in farms, but possible from borewell water).
         </Typography>
       </Box>
 

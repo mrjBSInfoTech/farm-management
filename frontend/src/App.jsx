@@ -15,7 +15,6 @@ import Turbidity from "./pages/Turbidity";
 import History from "./pages/History";
 import HealthInfo from "./pages/HealthInfo";
 import Oxygen from "./pages/Oxygen";
-import WaterInfo from "./pages/WaterInfo";
 import theme from './theme/fontTheme';
 import Welcome from "./Welcome";
 import Login from "./pages/Login";
@@ -63,16 +62,6 @@ function App() {
             }
           />
           <Route
-            path="/information/conductivity"
-            element={
-              <ProtectedRoute>
-                <Sidebar>
-                  <Conductivity />
-                </Sidebar>
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/information/turbidity"
             element={
               <ProtectedRoute>
@@ -103,11 +92,11 @@ function App() {
             }
           />
           <Route
-            path="/information/waterInfo"
+            path="/information/conductivity"
             element={
               <ProtectedRoute>
                 <Sidebar>
-                  <WaterInfo />
+                  <Conductivity />
                 </Sidebar>
               </ProtectedRoute>
             }

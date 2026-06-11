@@ -38,6 +38,7 @@ import { saveHistory } from "../api/historyAPI";
 import { getHistory } from "../api/historyAPI";
 import { styled } from "@mui/material/styles";  
 import Export from "../components/Dashboard/Export.jsx";
+import { getFishRecommendations, getCompatibilityStatus } from "../utils/fishRecommendations";
 
 // Icons
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
@@ -46,6 +47,9 @@ import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WarningIcon from "@mui/icons-material/Warning";
+import FishIcon from "@mui/icons-material/Pets";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Slide Transition for Snackbar
 function SlideTransition(props) {
@@ -139,6 +143,8 @@ export default function Dashboard() {
     oxygen: 0,
   });
   const [waterUsage, setWaterUsage] = useState("");
+  const [fishRecommendations, setFishRecommendations] = useState([]);
+  const [hasDataDetected, setHasDataDetected] = useState(false);
 
   // Helper functions for export
   const formatTime = (dateString) => {
@@ -168,6 +174,15 @@ export default function Dashboard() {
     const interval = setInterval(fetchData, 3000); // realtime
     return () => clearInterval(interval);
   }, []);
+
+  // Update fish recommendations whenever water quality changes
+  useEffect(() => {
+    if (iotData.ph > 0 && iotData.temperature > 0) {
+      const recommendations = getFishRecommendations(iotData);
+      setFishRecommendations(recommendations);
+      setHasDataDetected(true);
+    }
+  }, [iotData]);
 
   // Fetch history data for export
   useEffect(() => {
@@ -264,7 +279,7 @@ export default function Dashboard() {
       ),
     },
     {
-      title: "OXYGEN",
+      title: "DISSOLVED OXYGEN",
       value: iotData.oxygen,
       unit: "mg/L",
       ...getStatusStyle(oxygenStatus),
@@ -390,7 +405,7 @@ export default function Dashboard() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, backgroundColor: "background.default", minHeight: "100vh" }}>
       <Box
         sx={{
           display: "flex",
@@ -545,8 +560,6 @@ export default function Dashboard() {
             p: { xs: 3, md: 3 },
             mt: 3,
             borderRadius: 3,
-            height: { xs: 400, md: 500 },
-            minHeight: { xs: 380, md: 500 },
             width: { xs: "100%", md: "100%" },
           }}
         >
@@ -588,8 +601,6 @@ export default function Dashboard() {
           {/* Add your chart/content here */}
           <Box
             sx={{
-              height: { xs: "auto", sm: 250, md: 350 },
-              minHeight: { xs: "auto", sm: 250, md: 350 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -710,7 +721,7 @@ export default function Dashboard() {
                     variant="body2"
                     sx={{ color: "text.secondary", mb: 0.5 }}
                   >
-                    Oxygen
+                    Dissolve Oxygen
                   </Typography>
                   <Typography
                     sx={{
@@ -725,6 +736,263 @@ export default function Dashboard() {
               </Box>
             </Box>
           </Box>
+
+          {/* Farmable Fish Recommendations Section */}
+          {hasDataDetected && (
+          <Box sx={{ mt: 4 }}>
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: { xs: "1.1rem", md: "1.25rem" },
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                Recommended Farmable Fish for Philippines
+              </Typography>
+            </Box>
+
+            {/* Fish Recommendations Grid */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", lg: "1fr 1fr 1fr" },
+                gap: 2,
+              }}
+            >
+              {fishRecommendations.slice(0, 6).map((fish) => {
+                const compatibility = getCompatibilityStatus(fish.compatibilityScore);
+                return (
+                  <Paper
+                    key={fish.id}
+                    sx={{
+                      p: 2,
+                      border: `2px solid ${compatibility.color}`,
+                      borderRadius: 2,
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                      "&:hover": {
+                        transform: "translateY(-4px)",
+                        boxShadow: `0 4px 12px ${compatibility.color}33`,
+                      },
+                    }}
+                  >
+                    {/* Fish Header */}
+                    <Box sx={{ mb: 2 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "start",
+                          mb: 1,
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                          >
+                            {fish.name}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "text.secondary", fontStyle: "italic" }}
+                          >
+                            {fish.scientificName}
+                          </Typography>
+                        </Box>
+                        <Chip
+                          label={compatibility.status}
+                          sx={{
+                            backgroundColor: compatibility.color,
+                            color: "white",
+                            fontWeight: "bold",
+                            fontSize: "0.75rem",
+                          }}
+                        />
+                      </Box>
+
+                      {/* Compatibility Score Bar */}
+                      <Box sx={{ mb: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            mb: 0.5,
+                          }}
+                        >
+                          <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                            Compatibility
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: "bold",
+                              color: compatibility.color,
+                            }}
+                          >
+                            {fish.compatibilityScore}%
+                          </Typography>
+                        </Box>
+                        <LinearProgress
+                          variant="determinate"
+                          value={fish.compatibilityScore}
+                          sx={{
+                            height: 8,
+                            borderRadius: 2,
+                            backgroundColor: "#e0e0e0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: compatibility.color,
+                            },
+                          }}
+                        />
+                      </Box>
+                    </Box>
+
+                    {/* Fish Details */}
+                    <Box sx={{ mb: 2 }}>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: 1,
+                          mb: 1.5,
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                              display: "block",
+                              mb: 0.25,
+                            }}
+                          >
+                            Growth Rate
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {fish.growthRate}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                              display: "block",
+                              mb: 0.25,
+                            }}
+                          >
+                            Difficulty
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {fish.difficulty}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                              display: "block",
+                              mb: 0.25,
+                            }}
+                          >
+                            Profitability
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {fish.profitability}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                              display: "block",
+                              mb: 0.25,
+                            }}
+                          >
+                            Market Demand
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {fish.marketDemand}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Divider sx={{ my: 1 }} />
+
+                      {/* Parameter Ranges */}
+                      <Box sx={{ mb: 1 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontWeight: "bold",
+                            display: "block",
+                            mb: 0.75,
+                            color: "text.secondary",
+                          }}
+                        >
+                          Ideal Water Parameters:
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                          <Typography variant="caption">
+                            <strong>pH:</strong> {fish.phRange.min} - {fish.phRange.max}
+                          </Typography>
+                          <Typography variant="caption">
+                            <strong>Temp:</strong> {fish.temperatureRange.min}°C -{" "}
+                            {fish.temperatureRange.max}°C
+                          </Typography>
+                          <Typography variant="caption">
+                            <strong>DO:</strong> {fish.oxygenRange.min} - {fish.oxygenRange.max}{" "}
+                            mg/L
+                          </Typography>
+                          <Typography variant="caption">
+                            <strong>Turbidity:</strong> {fish.turbidityRange.min} -{" "}
+                            {fish.turbidityRange.max} NTU
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+
+                    {/* Issues / Notes */}
+                    {fish.issues.length > 0 ? (
+                      <Alert severity="warning" sx={{ mb: 1 }}>
+                        {fish.issues.map((issue, idx) => (
+                          <Typography key={idx} variant="caption" display="block">
+                            • {issue}
+                          </Typography>
+                        ))}
+                      </Alert>
+                    ) : (
+                      <Alert severity="success" sx={{ mb: 1 }}>
+                        <Typography variant="caption">
+                          ✓ Current conditions are excellent for this fish!
+                        </Typography>
+                      </Alert>
+                    )}
+
+                    {/* Description */}
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        color: "text.secondary",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {fish.description}
+                    </Typography>
+                  </Paper>
+                );
+              })}
+            </Box>
+          </Box>
+          )}
+
           {waterUsage.includes("not safe") && (
             <Dialog
               open={openDialog}

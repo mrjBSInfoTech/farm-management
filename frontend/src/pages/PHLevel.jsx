@@ -9,8 +9,7 @@ export default function PHLevel() {
           PH Level
         </Typography>
         <Typography variant="body1" sx={{ color: "text.secondary" }}>
-          Measures how acidic or basic the water is on a scale of 0–14. A pH of
-          7 is neutral.
+           A measure of acidity (low pH) vs. alkalinity (high pH). It directly damages fish tissues and controls the toxicity of ammonia.
         </Typography>
       </Box>
 
@@ -25,7 +24,13 @@ export default function PHLevel() {
           variant="body1"
           sx={{ lineHeight: 1.8, color: "text.secondary" }}
         >
-          In aquaculture, pH level directly affects the health and survival of farmed aquatic organisms. Most fish and shrimp thrive in a pH range of 6.5-8.5. When pH becomes too acidic or too alkaline, it stresses aquatic life, inhibits nutrient absorption, and reduces growth rates. Abnormal pH also affects nutrient availability in the water—alkaline water can lock up essential minerals needed for plant and fish growth, while acidic water can make toxic metals more available.
+          In aquaculture, pH level directly affects the health and survival of
+          farmed aquatic organisms. Most fish and shrimp thrive in a pH range of
+          6.5-8.5. When pH becomes too acidic or too alkaline, it stresses
+          aquatic life, inhibits nutrient absorption, and reduces growth rates.
+          Abnormal pH also affects nutrient availability in the water—alkaline
+          water can lock up essential minerals needed for plant and fish growth,
+          while acidic water can make toxic metals more available.
         </Typography>
         <br />
         <Typography
@@ -49,6 +54,32 @@ export default function PHLevel() {
           entire ecosystems. Maintaining a balanced pH helps ensure safe
           drinking water, protects infrastructure, and supports healthy rivers,
           lakes, and oceans.
+        </Typography>
+      </Box>
+
+      {/* How it Affects Fish  */}
+      <Box sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+          How it affects fish: 
+        </Typography>
+        
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>1.) Low pH (less than 5.5)</b> - burns gill tissue, reduces oxygen uptake, causes salt loss (osmoregulatory failure), and leaches toxic metals (aluminum, iron) from sediment.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>2.) High pH (greater than 9.5)</b> - burns gills and skin, and critically converts harmless ammonium (NH₄⁺) into toxic ammonia (NH₃). A small pH rise from 7.5 to 8.5 can double ammonia toxicity.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>3.) Rapid swings (e.g., 7.0 - 6.0 in 2 hours)</b> - often more lethal than a stable but suboptimal pH, because fish cannot adjust their blood chemistry fast enough.
         </Typography>
       </Box>
 

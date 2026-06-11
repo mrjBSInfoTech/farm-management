@@ -119,13 +119,8 @@ export default function DashboardLayout({ children }) {
         },
         {
           segment: "oxygen",
-          title: "Oxygen",
+          title: "Dissolve Oxygen",
           icon: <BubbleChartIcon />,
-        },
-        {
-          segment: "waterInfo",
-          title: "Water Info",
-          icon: <WaterIcon />,
         },
       ],
     },
@@ -298,6 +293,7 @@ export default function DashboardLayout({ children }) {
               backgroundColor: theme.palette.background.sidebar,
               color: theme.palette.text.sidebar,
               borderRight: "none",
+              overflowX: "hidden",
             },
 
             "& .MuiAppBar-root .MuiIconButton-root": {

@@ -8,8 +8,9 @@ export default function Turbidity() {
           Turbidity
         </Typography>
         <Typography variant="body1" sx={{ color: "text.secondary" }}>
-          Measures how cloudy or clear the water is. High turbidity means more
-          suspended particles like dirt or microbes.
+          Cloudiness caused by suspended clay, silt, algae, or organic
+          particles. It affects fish mostly indirectly by interfering with
+          behavior and gill function.
         </Typography>
       </Box>
 
@@ -54,6 +55,38 @@ export default function Turbidity() {
           runoff, or improper waste disposal. Continuous monitoring allows early
           detection of these conditions and prevents contaminated water from
           being consumed.
+        </Typography>
+      </Box>
+
+      {/* How it Affects Fish  */}
+      <Box sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+          How it affects fish: 
+        </Typography>
+        
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>1.) Clogs gills</b> - abrasive particles cause inflammation, excess mucus, and bacterial gill disease.     
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>2.) Impedes feeding</b> - most farmed fish are visual feeders; high turbidity makes it hard to find pellets, reducing growth and increasing feed waste.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>3.) Blocks sunlight</b> - kills beneficial algae that produce oxygen - worsens nighttime DO crashes.
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ lineHeight: 1.8, color: "text.secondary" }}
+        >
+          <b>4.) Smothers eggs</b> - suspended solids settle on spawning substrates, suffocating eggs and fry.  
         </Typography>
       </Box>
 
