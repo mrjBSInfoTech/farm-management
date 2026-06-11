@@ -2,7 +2,14 @@ import { Box, Typography, Paper, Divider } from "@mui/material";
 
 export default function Oxygen() {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box 
+      sx={{ 
+        p: 3, 
+        backgroundColor: "background.paper",
+        minHeight: "100%",             
+        boxSizing: "border-box"            
+      }}
+    >
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>

@@ -2,7 +2,14 @@ import { Box, Typography, Divider } from "@mui/material";
 
 export default function Turbidity() {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box 
+      sx={{ 
+        p: 3, 
+        backgroundColor: "background.paper",
+        minHeight: "100%",             
+        boxSizing: "border-box"            
+      }}
+    >
       <Box>
         <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
           Turbidity

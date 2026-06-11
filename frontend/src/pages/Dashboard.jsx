@@ -50,6 +50,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 import FishIcon from "@mui/icons-material/Pets";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 // Slide Transition for Snackbar
 function SlideTransition(props) {
@@ -205,7 +206,7 @@ export default function Dashboard() {
   const TURBIDITY_GOOD_MAX = 5; // NTU
 
   const TEMP_GOOD_MIN = 20; // °C
-  const TEMP_GOOD_MAX = 30;
+  const TEMP_GOOD_MAX = 35;
 
   const OXYGEN_GOOD_MIN = 5; // mg/L
   const OXYGEN_GOOD_MAX = 14; // mg/L
@@ -616,7 +617,7 @@ export default function Dashboard() {
           >
             <Box sx={{ textAlign: "center" }}>
               {waterUsage.includes("not safe") ? (
-                <CheckCircleIcon
+                <WarningIcon
                   sx={{
                     fontSize: 60,
                     color: "#FF9800",
@@ -624,7 +625,7 @@ export default function Dashboard() {
                   }}
                 />
               ) : (
-                <WarningIcon
+                <ThumbUpIcon
                   sx={{
                     fontSize: 60,
                     color: "#4CAF50",
@@ -678,7 +679,7 @@ export default function Dashboard() {
                       color: phStatus === "Great" ? "#22C55E" : "#EF4444",
                     }}
                   >
-                    {iotData.ph}
+                    {iotData.ph} 
                   </Typography>
                 </Box>
                 <Box sx={{ textAlign: "center" }}>
